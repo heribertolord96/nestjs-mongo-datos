@@ -12,14 +12,19 @@ export class ProductsService {
   }
 
   findAll(params?: FilterProductsDto) {
-    if(params){
+    if (params) {
       const filters: FilterQuery<Product> = {};
-      const {limit, offset}= params;
-      const {minPrice, maxPrice}= params;
-      if(minPrice && maxPrice){
-        filters.price = {$gte:minPrice, $lte:maxPrice};
+      const { limit, offset } = params;
+      const { minPrice, maxPrice } = params;
+      if (minPrice && maxPrice) {
+        filters.price = { $gte: minPrice, $lte: maxPrice };
       }
-      return this.productModel.find(filters).skip(offset).limit(limit).exec();
+      return this.productModel
+        .find(filters)
+        .populate('brand')
+        .skip(offset)
+        .limit(limit)
+        .exec();
     }
     return this.productModel.find().exec();
   }
